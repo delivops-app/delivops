@@ -1,14 +1,14 @@
 import { useState } from "react";
 
 export default function App() {
+  // 🔸 Restaure la session si déjà présente
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const [role, setRole]   = useState(() => localStorage.getItem("role"));
+
   // états du formulaire
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
-  // "session" simulée
-  const [token, setToken] = useState(null);
-  const [role, setRole] = useState(null);
 
   function handleLogin(e) {
     e.preventDefault();
@@ -23,12 +23,22 @@ export default function App() {
       return;
     }
 
-    // succès simulé
-    setToken("fake-jwt-token");
-    setRole("chauffeur");
+    // ✅ succès simulé : on "reçoit" un token + rôle
+    const tok = "fake-jwt-token";
+    const r = "chauffeur";
+
+    // 🔸 Sauvegarde persistante
+    localStorage.setItem("token", tok);
+    localStorage.setItem("role", r);
+
+    setToken(tok);
+    setRole(r);
   }
 
   function logout() {
+    // 🔸 Efface le stockage + l'état
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setToken(null);
     setRole(null);
     setEmail("");
@@ -36,7 +46,7 @@ export default function App() {
     setError("");
   }
 
-  // Si pas connecté → formulaire
+  // Vue "non connectée"
   if (!token) {
     return (
       <div style={{ maxWidth: 360, margin: "80px auto", fontFamily: "system-ui" }}>
@@ -58,15 +68,13 @@ export default function App() {
           />
           <button type="submit">Se connecter</button>
           {error && <div style={{ color: "crimson" }}>{error}</div>}
-          <div style={{ fontSize: 12, color: "#666" }}>
-            (Ici on simule la connexion sans serveur)
-          </div>
+          <div style={{ fontSize: 12, color: "#666" }}>(Simulation sans serveur)</div>
         </form>
       </div>
     );
   }
 
-  // Si connecté → mini dashboard
+  // Vue "connectée"
   return (
     <div style={{ maxWidth: 720, margin: "40px auto", fontFamily: "system-ui" }}>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -74,7 +82,7 @@ export default function App() {
         <button onClick={logout}>Se déconnecter</button>
       </header>
       <p>Connectée avec un token factice : <code>{token}</code></p>
-      <p>On ajoutera ici le formulaire de tournée.</p>
+      <p>Rafraîchis la page : tu restes connectée (grâce à localStorage).</p>
     </div>
   );
 }
