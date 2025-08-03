@@ -1,88 +1,35 @@
-import { useState } from "react";
+// src/App.jsx
+import { Routes, Route, Navigate, Link } from "react-router-dom"; // Outils pour définir les routes et naviguer.
+import { useAuth0 } from "@auth0/auth0-react";                    // Hook pour connaître l’état d’auth.
+import Login from "./pages/Login";                                 // Page /login (déclenche Auth0).
+import Dashboard from "./pages/Dashboard";                         // Page /dashboard (protégée).
 
-export default function App() {
-  // 🔸 Restaure la session si déjà présente
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
-  const [role, setRole]   = useState(() => localStorage.getItem("role"));
+function RequireAuth({ children }) {                               // Petite garde d’accès pour les routes protégées.
+  const { isAuthenticated, isLoading } = useAuth0();               // Récupère état de chargement et d’auth.
+  if (isLoading) return <p style={{ textAlign: "center", marginTop: 40 }}>Chargement…</p>; // Affiche un état d’attente.
+  return isAuthenticated ? children : <Navigate to="/login" replace />; // Si connecté → affiche; sinon → redirige.
+}
 
-  // états du formulaire
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-
-  function handleLogin(e) {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !password) {
-      setError("Email et mot de passe requis");
-      return;
-    }
-    if (password.length < 4) {
-      setError("Mot de passe trop court (≥ 4)");
-      return;
-    }
-
-    // ✅ succès simulé : on "reçoit" un token + rôle
-    const tok = "fake-jwt-token";
-    const r = "chauffeur";
-
-    // 🔸 Sauvegarde persistante
-    localStorage.setItem("token", tok);
-    localStorage.setItem("role", r);
-
-    setToken(tok);
-    setRole(r);
-  }
-
-  function logout() {
-    // 🔸 Efface le stockage + l'état
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    setToken(null);
-    setRole(null);
-    setEmail("");
-    setPassword("");
-    setError("");
-  }
-
-  // Vue "non connectée"
-  if (!token) {
-    return (
-      <div style={{ maxWidth: 360, margin: "80px auto", fontFamily: "system-ui" }}>
-        <h2>Connexion</h2>
-        <form onSubmit={handleLogin} style={{ display: "grid", gap: 10 }}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Mot de passe (≥ 4)"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit">Se connecter</button>
-          {error && <div style={{ color: "crimson" }}>{error}</div>}
-          <div style={{ fontSize: 12, color: "#666" }}>(Simulation sans serveur)</div>
-        </form>
-      </div>
-    );
-  }
-
-  // Vue "connectée"
+export default function App() {                                    // Composant racine de l’interface.
   return (
-    <div style={{ maxWidth: 720, margin: "40px auto", fontFamily: "system-ui" }}>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h2>DelivOps — Espace {role}</h2>
-        <button onClick={logout}>Se déconnecter</button>
-      </header>
-      <p>Connectée avec un token factice : <code>{token}</code></p>
-      <p>Rafraîchis la page : tu restes connectée (grâce à localStorage).</p>
+    <div style={{ maxWidth: 900, margin: "24px auto", fontFamily: "system-ui" }}> // Conteneur principal centré.
+      <nav style={{ display: "flex", gap: 12, marginBottom: 16 }}> // Menu simple de navigation.
+        <Link to="/login">Login</Link>                             // Lien vers la page Login (ouvre Auth0).
+        <Link to="/dashboard">Dashboard</Link>                     // Lien vers la page protégée.
+      </nav>
+
+      <Routes>                                                     // Définition des routes (URL → composant).
+        <Route path="/login" element={<Login />} />                // Route /login : page qui déclenche Auth0.
+        <Route                                                     // Route /dashboard : protégée par RequireAuth.
+          path="/dashboard"
+          element={
+            <RequireAuth>                                          // Vérifie l’auth avant d’afficher le contenu.
+              <Dashboard />                                        // Composant du tableau de bord.
+            </RequireAuth>
+          }
+        />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} /> // Routes inconnues → redirection.
+      </Routes>
     </div>
   );
 }
