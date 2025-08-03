@@ -1,7 +1,0 @@
-# Conserver LF partout (recommandé pour projets web)
-* text=auto eol=lf
-
-# Scripts Windows qui doivent garder CRLF
-*.bat text eol=crlf
-*.cmd text eol=crlf
-*.ps1 text eol=crlf
