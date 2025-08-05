@@ -4,23 +4,26 @@ import { Routes, Route, Link } from 'react-router-dom';
 // On importe les pages de l'application
 import Home from './pages/Home';
 import About from './pages/About';
+import Recap from './pages/Recap';
+import './index.css';
 
 // Composant principal de l'application
 function App() {
   return (
-    <div>
-      {/* Barre de navigation simple */}
-      <nav style={{ marginBottom: '1rem' }}>
-        <Link to="/" style={{ marginRight: '1rem', textDecoration: 'none' }}>Accueil</Link>
-        <Link to="/about" style={{ textDecoration: 'none' }}>À propos</Link>
-      </nav>
-
+    <div className="app-container">
       {/* Routes principales */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
+        <Route path="/recap" element={<Recap />} />
       </Routes>
-    </div>
+
+      <footer className="bottom-nav">
+      <Link to="/">Accueil</Link>
+      <Link to="/about">À propos</Link>
+      <Link to="/about">À propos</Link>
+      </footer>
+      </div>
   );
 }
 

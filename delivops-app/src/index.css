@@ -1,5 +1,7 @@
-: :root {
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+    font-family: "Open Sans", sans-serif;
     line-height: 1.5;
     font-weight: 400;
   
@@ -29,11 +31,17 @@
     align-items: center;
     min-width: 320px;
     min-height: 100vh;
+    font-family: 'Open Sans', sans-serif;
   }
   
   h1 {
     font-size: 3.2em;
     line-height: 1.1;
+    text-align: center;
+  }
+
+  h2 {
+    text-align: center;
   }
   
   button {
@@ -48,13 +56,67 @@
     transition: border-color 0.25s;
   }
   button:hover {
-    border-color: #646cff;
+    border-color: #a6a6a6;
   }
+
+/*
   button:focus,
   button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
   }
+*/
+
+input,
+select,
+textarea {
+  font-family: 'Open Sans', sans-serif;
+}
+
+#btn-validation {
+    background-color: #00b47e;
+    color:#ffffff;
+    border: none;
+    transition: 0.25s;
+}
+
+#btn-validation:hover {
+    background-color: #06dd9d;   
+}
+
+/* === MENU BAS FIXE POUR MOBILE === */
+
+.app-container {
+    padding-bottom: 60px; /* Laisse la place au menu en bas */
+    min-height: 100vh;
+    position: relative;
+    width: 100%;
+  }
   
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #444;
+    z-index: 1000;
+  }
+  
+  .bottom-nav a {
+    color: white;
+    font-size: 1rem;
+    text-decoration: none;
+  }
+  
+  .bottom-nav a:hover {
+    text-decoration: underline;
+  }
+  
+
   @media (prefers-color-scheme: light) {
     :root {
       color: #213547;
@@ -67,3 +129,4 @@
       background-color: #f9f9f9;
     }
   }
+

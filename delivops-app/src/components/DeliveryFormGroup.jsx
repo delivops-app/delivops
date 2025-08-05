@@ -1,9 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DeliveryForm from './DeliveryForm';
 
-export default function DeliveryFormGroup() {
+export default function DeliveryFormGroup({ initialData = null }) {
+  const navigate = useNavigate();
+
+  // Si des tournées sont fournies depuis le résumé, on les utilise
   const [forms, setForms] = useState([0]);
   const [data, setData] = useState({});
+  const [showRecap, setShowRecap] = useState(false);
+
+  useEffect(() => {
+    if (initialData && initialData.length > 0) {
+      const ids = initialData.map((_, index) => index);
+      const initialState = {};
+      ids.forEach((id, index) => {
+        initialState[id] = initialData[index];
+      });
+      setForms(ids);
+      setData(initialState);
+    }
+  }, [initialData]);
 
   const handleAddForm = () => {
     setForms([...forms, forms.length]);
@@ -31,13 +48,51 @@ export default function DeliveryFormGroup() {
   };
 
   const handleSubmit = () => {
-    const result = Object.values(data);
-    console.log('Tournées à envoyer :', result);
+    setShowRecap(true);
   };
+
+  const handleConfirm = () => {
+    const result = Object.values(data);
+    console.log('✅ Tournées confirmées et prêtes à envoyer au backend :', result);
+    // Ici, on pourrait appeler une API POST si besoin.
+    // navigate('/merci'); // exemple
+  };
+
+  const handleModify = () => {
+    setShowRecap(false);
+  };
+
+  if (showRecap) {
+    const recap = Object.values(data);
+    return (
+      <div>
+        <h2>Récapitulatif de la tournée</h2>
+        {recap.map((tour, index) => (
+          <div key={index} style={{ marginBottom: '1rem', border: '1px solid #ccc', padding: '1rem', borderRadius: '8px' }}>
+            <p><strong>Date :</strong> {tour.date}</p>
+            <p><strong>Client :</strong> {tour.client}</p>
+            <p><strong>Colis :</strong></p>
+            <ul>
+              {Object.entries(tour.packages || {}).map(([type, count]) => (
+                <li key={type}>{type} : {count}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+
+        <button onClick={handleModify} style={{ marginRight: '1rem' }}>
+          Modifier
+        </button>
+        <button onClick={handleConfirm} id="btn-validation">
+          Confirmer
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div>
-      <h2>Déclarations des tournées</h2>
+      <h2>Début de tournée</h2>
 
       {forms.map((id) => (
         <div
@@ -47,7 +102,7 @@ export default function DeliveryFormGroup() {
             padding: '1rem',
             marginBottom: '1rem',
             position: 'relative',
-            borderRadius: '8px'
+            borderRadius: '8px',
           }}
         >
           <button
@@ -68,7 +123,11 @@ export default function DeliveryFormGroup() {
             ✖
           </button>
 
-          <DeliveryForm formId={id} onChange={handleFormChange} />
+          <DeliveryForm
+            formId={id}
+            onChange={handleFormChange}
+            initialData={data[id] || null}
+          />
         </div>
       ))}
 
@@ -76,8 +135,8 @@ export default function DeliveryFormGroup() {
         Ajouter une tournée
       </button>
 
-      <button type="button" onClick={handleSubmit}>
-        Envoyer les tournées
+      <button type="button" onClick={handleSubmit} id="btn-validation">
+        Valider
       </button>
     </div>
   );
