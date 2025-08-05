@@ -7,10 +7,10 @@ const root = createRoot(document.getElementById('root'));
 
 root.render(
 <Auth0Provider
-    domain="dev-or3c4n80x1rba26g.eu.auth0.com"
+    domain="login.delivops.app"
     clientId="cOLtyVzQ1bzFMtBXxKwibbM9mECWvSEy"
     authorizationParams={{
-      redirect_uri: window.location.origin
+      redirect_uri: window.location.origin + "/callback"
     }}
   >
     <App />
