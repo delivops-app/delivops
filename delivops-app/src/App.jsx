@@ -5,6 +5,9 @@ import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
 import Recap from './pages/Recap';
+import Callback from './pages/callback';
+
+
 import './index.css';
 
 // Composant principal de l'application
@@ -16,6 +19,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/recap" element={<Recap />} />
+        <Route path="/callback" element={<Callback />} /> 
       </Routes>
 
       <footer className="bottom-nav">
