@@ -6,8 +6,8 @@ import App from './App';
 import './index.css';
 
 // Auth0 config
-const domain = "login.delivops.app";
-const clientId = "cOLtyVzQ1bzFMtBXxKwibbM9mECWvSEy";
+const domain = import.meta.env.VITE_AUTH0_DOMAIN;
+const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
 
 //Activation du système de routes 
 ReactDOM.createRoot(document.getElementById('root')).render(

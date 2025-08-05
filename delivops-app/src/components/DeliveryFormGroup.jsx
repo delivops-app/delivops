@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import DeliveryForm from './DeliveryForm';
 
 export default function DeliveryFormGroup({ initialData = null }) {
-  const navigate = useNavigate();
 
   // Si des tournées sont fournies depuis le résumé, on les utilise
   const [forms, setForms] = useState([0]);
