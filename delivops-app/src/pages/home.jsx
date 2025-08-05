@@ -1,10 +1,11 @@
 import DeliveryFormGroup from '../components/DeliveryFormGroup';
+import AppLayout from '../components/AppLayout';
 
 export default function Home() {
   return (
-    <div>
+    <AppLayout>
       <h1>Accueil</h1>
       <DeliveryFormGroup />
-    </div>
+    </AppLayout>
   );
 }
