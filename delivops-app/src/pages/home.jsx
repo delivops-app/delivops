@@ -3,7 +3,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import DeliveryFormGroup from '../components/DeliveryFormGroup';
 import LoginButton from '../components/LoginButton';
 import LogoutButton from '../components/LogoutButton';
-import UserInfo from '../components/UserInfo';
+import UserDisplay from '../components/UserDisplay';
 
 
 
@@ -29,7 +29,7 @@ export default function Home() {
       ) : (
         // Si l’utilisateur est connecté → infos, bouton logout et formulaire
         <div>
-          <UserInfo />
+          <UserDisplay />
           <LogoutButton />
           <DeliveryFormGroup initialData={importedTours} />
         </div>
