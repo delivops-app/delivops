@@ -45,6 +45,8 @@ logs/
 # =========================
 .DS_Store
 Thumbs.db
+.vscode/
+
 
 # =========================
 # IDE / éditeurs
@@ -52,3 +54,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# node
+**/node_modules
+npm-debug.log*
+yarn-error.log*
