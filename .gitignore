@@ -3,3 +3,52 @@ __pycache__/
 venv/
 .env
 *.log
+
+# =========================
+# Node.js / React (frontend)
+# =========================
+frontend/node_modules
+frontend/build
+frontend/dist
+frontend/.env
+frontend/.env.development
+frontend/.env.local
+frontend/.env.*.local
+
+# =========================
+# Python / FastAPI (backend)
+# =========================
+backend/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/.env
+backend/.env.local
+
+# =========================
+# Docker
+# =========================
+# Volumes de données Postgres
+pgdata/
+**/pgdata/
+
+# =========================
+# Logs
+# =========================
+*.log
+*.out
+*.err
+logs/
+*.sqlite3
+
+# =========================
+# Systèmes d'exploitation
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# IDE / éditeurs
+# =========================
+.vscode/
+.idea/
+*.swp
