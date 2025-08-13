@@ -8,13 +8,13 @@ const ORG_ID = "ORG_DEMO"; // adapte selon ton org
 
 export default function Manager() {
   const { isAuthenticated, loginWithRedirect, logout, user} = useAuth0();
-  const [devToken, setDevToken] = useState("");
   const { call } = useApi();
   const [email, setEmail] = useState("");
   const [drivers, setDrivers] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
+  const [newSeats, setNewSeats] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -25,6 +25,7 @@ export default function Manager() {
       ]);
       setDrivers(d);
       setStats(s);
+      setNewSeats(String(s.seats_purchased));
     } catch (e) {
       setMsg(e.message);
     } finally {
@@ -79,17 +80,42 @@ export default function Manager() {
     }
   };
 
+  const applySeats = async (e) => {
+    e.preventDefault();
+    setMsg("");
+    try {
+      const seatsNum = Number(newSeats);
+      if (!Number.isFinite(seatsNum) || seatsNum < 0) {
+        throw new Error("Nombre de sièges invalide");
+      }
+      await call(`/orgs/${ORG_ID}/seats`, {
+        method: "PATCH",
+        body: { seats_purchased: seatsNum },
+      });
+      await load();
+      setMsg("Mise à jour des sièges réalisée.");
+    } catch (e) {
+      setMsg(e.message);
+    }
+  };
+
   if (!isAuthenticated) {
-    return <div style={{ padding: 24 }}>
-      <button onClick={() => loginWithRedirect()}>Se connecter (manager)</button>
-    </div>;
+    return (
+      <div style={{ padding: 24 }}>
+        <h1>Manager</h1>
+        <p>Connecte-toi pour gérer tes chauffeurs.</p>
+        <button onClick={() => loginWithRedirect()}>Se connecter (manager)</button>
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: 24, maxWidth: 800 }}>
+    <div style={{ padding: 24, maxWidth: 900 }}>
       <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
         <div>Connecté : {user?.email}</div>
-        <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>Se déconnecter</button>
+        <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+          Se déconnecter
+        </button>
       </div>
 
       <h2 style={{ marginTop: 24 }}>Statuts</h2>
@@ -102,6 +128,18 @@ export default function Manager() {
         </div>
       ) : <div>—</div>}
 
+      <h3 style={{ marginTop: 12 }}>Gérer les sièges</h3>
+      <form onSubmit={applySeats} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <input
+          type="number"
+          min="0"
+          value={newSeats}
+          onChange={(e) => setNewSeats(e.target.value)}
+          style={{ width: 120 }}
+        />
+        <button type="submit">Appliquer</button>
+      </form>
+      
       <h2 style={{ marginTop: 24 }}>Inviter un chauffeur</h2>
       <form onSubmit={invite} style={{ display: "flex", gap: 8 }}>
         <input
