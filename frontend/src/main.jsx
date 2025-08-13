@@ -23,8 +23,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       domain={domain}
       clientId={clientId}
       authorizationParams={{
+        audience: "https://dev-or3c4n80x1rba26g.eu.auth0.com/api/v2/" ,
         redirect_uri: window.location.origin + "/callback"
       }}
+      cacheLocation="localstorage"
+      useRefreshTokens={true}
     >
       <BrowserRouter>
         <App />
