@@ -6,6 +6,9 @@ from ..db import get_db
 from .. import models, schemas
 from ..auth import require_role
 from ..auth0_mgmt import create_user, send_password_reset_email, set_user_blocked, update_app_metadata, assign_role
+from typing import List
+from ..schemas import DriverOut
+
 
 DISABLE_FREE_AFTER_DAYS = int(os.getenv("DISABLE_FREE_AFTER_DAYS", "30"))
 
@@ -113,3 +116,28 @@ def free_seats_job(db: Session = Depends(get_db)):
     for _ in q:
         count += 1
     return {"checked": count}
+
+@router.get("", response_model=List[DriverOut], dependencies=[Depends(require_role(["manager"]))])
+def list_drivers(org_id: str, db: Session = Depends(get_db)):
+    rows = db.query(models.Driver).where(models.Driver.org_id == org_id).order_by(models.Driver.created_at.desc()).all()
+    return rows
+
+@router.get("/stats/{org_id}", dependencies=[Depends(require_role(["manager"]))])
+def drivers_stats(org_id: str, db: Session = Depends(get_db)):
+    org = db.get(models.Organization, org_id)
+    if not org:
+        raise HTTPException(404, "org not found")
+    active = _active_count(db, org_id)
+    total = db.scalar(
+        select(func.count(models.Driver.driver_id)).where(
+            models.Driver.org_id == org_id
+        )
+    ) or 0
+    return {
+        "org_id": org_id,
+        "seats_purchased": org.seats_purchased,
+        "active": active,
+        "pending_or_disabled": total - active,
+        "total": total,
+        "seats_remaining": max(org.seats_purchased - active, 0)
+    }
